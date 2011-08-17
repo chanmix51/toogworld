@@ -1,0 +1,85 @@
+<!DOCTYPE html> 
+<html> 
+    <head> 
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> 
+        <meta name="robots" content="noindex,nofollow" />
+        <style>
+            /* Z-index of #mask must lower than #boxes .window */
+            #mask {
+              position:absolute;
+              z-index:9000;
+              background-color:#000;
+              display:none;
+            }
+
+            #boxes .window {
+              position:absolute;
+              width:440px;
+              height:200px;
+              display:none;
+              z-index:9999;
+              padding:20px;
+            }
+
+            /* Customize your modal window here, you can add background image too */
+            #boxes #dialog {
+              width:375px; 
+              height:203px;
+              background: white;
+            }
+        </style>
+        <script type="text/javascript" src="/js/jquery-1.6.2.min.js" ></script>
+        <script type="text/javascript">
+            //<![CDATA[
+            $(document).ready(function () {
+            //id is the ID for the DIV you want to display it as modal window
+            var id='#dialog';
+            var maskHeight = $(document).height();
+            var maskWidth = $(window).width();
+
+            //Set height and width to mask to fill up the whole screen
+            $('#mask').css({'width':maskWidth,'height':maskHeight});
+
+            //transition effect     
+            $('#mask').fadeIn(1000);    
+            $('#mask').fadeTo("slow",0.8);  
+
+            //Get the window height and width
+            var winH = $(window).height();
+            var winW = $(window).width();
+
+            //Set the popup window to center
+            $(id).css('top',  winH/2-$(id).height()/2);
+            $(id).css('left', winW/2-$(id).width()/2);
+
+
+            //transition effect
+            $(id).fadeIn(2000); 
+
+        });
+            //!>
+        </script>
+    </head>
+    <body>
+        <div id="boxes">
+            <!-- #customize your modal window here -->
+
+            <div id="dialog" class="window">
+                <h2>Please log in</h2> 
+                <form action="{{ app.urlGenerator.generate('login') }}" method="post">
+                    {% if error_msg is defined %}
+                    <p class="error-msg">{{ error_msg }}</p>
+                    {% endif %}
+                  <ul>
+                    <li><span>Email:</span><span><input name="email" type="text" value="{{ email | default('') }}" id="email_field" /></span></li>
+                    <li><span>Password:</span><span><input name="password" type="password" value="" id="password_field" /></span></li>
+                    <li><span><input type="submit" name="login" value="login" /></span></li>
+                  </ul>
+                </form>
+            </div>
+
+            <!-- Do not remove div#mask, because you'll need it to fill the whole screen --> 
+            <div id="mask"></div>
+        </div>
+    </body>
+</html>

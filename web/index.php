@@ -1,6 +1,6 @@
 <?php
 define('ENV', 'dev');
 
-require '../application.php';
+$app = require __DIR__.'/../application.php';
 
 $app->run();
