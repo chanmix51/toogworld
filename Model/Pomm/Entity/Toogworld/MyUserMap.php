@@ -21,4 +21,12 @@ class MyUserMap extends BaseMyUserMap
             return $coll[0];
         }
     }
+
+    public function getSelectFields($alias = null)
+    {
+        $fields = parent::getSelectFields($alias);
+        $alias = is_null($alias) ? '' : sprintf("%s.", $alias);
+
+        return array_filter($fields, function($val) use ($alias) { return $val !== sprintf("%spassword", $alias); });
+    }
 }

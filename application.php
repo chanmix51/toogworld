@@ -1,5 +1,7 @@
 <?php
 
+use Symfony\Component\HttpFoundation\Response;
+
 $app = require __DIR__.'/bootstrap.php';
 
 /* ERROR HANDLING */
@@ -45,9 +47,7 @@ $app->post('/login', function() use($app) {
     }
     else
     {
-        $app['session']->authenticate($user);
-
-        return $app->redirect('/');
+        return $app->redirect($app['session']->authenticate($user));
     }
 })->bind('login');
 
@@ -65,13 +65,31 @@ $app->get('/check_auth/{app_ref}/{back_uri}/{token}', function($app_ref, $back_u
     {
         $app['session']->set('back_uri', $app['request']->get('back_uri'));
         $app['session']->set('token', $token);
+        $app['session']->set('app_ref', $app_ref);
 
         throw $e;
     }
 
+    $back_uri = $app['session']->addToken($app_ref, $token);
+
+    return $app->redirect($back_uri);
+
 })->bind('check_auth');
 
 $app->get('/confirm_auth/{app_ref}/{token}', function($app_ref, $token) use ($app) {
+    $app_auth = $app['db']
+        ->getMapFor('Model\Pomm\Entity\Toogworld\AppAuth')
+        ->findByPkJoinUser(array('app_ref' => $app_ref, 'token' => $token));
+    if (!$app_auth)
+    {
+        $response = new Response(null, 404);
+    }
+    else
+    {
+        $response = new Response(json_encode($app_auth->get('MyUser')->extract()), 200, array('content-type' => 'text/json'));
+    }
+
+    return $response;
 })->bind('confirm_auth');
 
 $app->get('/', function() use ($app) {
