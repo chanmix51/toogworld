@@ -27,10 +27,19 @@ $app['check_auth'] = $app->protect(function() use ($app) {
 });
 
 $app->get('/login', function() use ($app) {
-    return $app['twig']->render('show_login.html.twig');
+    try
+    {
+        $app['check_auth']();
+
+        return $app->redirect('/');
+    }
+    catch(UnauthorizedException $e) 
+    {
+        return $app['twig']->render('show_login.html.twig');
+    }
 })->bind('show_login');
 
-$app->post('/login', function() use($app) {
+$app->post('/login', function() use ($app) {
     $email = $app['request']->get('email');
     $password = $app['request']->get('password');
 
@@ -53,7 +62,14 @@ $app->post('/login', function() use($app) {
 
 $app->get('/logout', function() use ($app) {
     $app['session']->deauthenticate();
-    throw new UnauthorizedException();
+
+    return $app->redirect('/login');
+})->bind('logout');
+
+$app->get('/logout', function() use ($app) {
+    $app['session']->deauthenticate();
+
+    return $app->redirect('/login');
 })->bind('logout');
 
 $app->get('/check_auth/{app_ref}/{back_uri}/{token}', function($app_ref, $back_uri, $token) use ($app) {
@@ -70,9 +86,9 @@ $app->get('/check_auth/{app_ref}/{back_uri}/{token}', function($app_ref, $back_u
         throw $e;
     }
 
-    $back_uri = $app['session']->addToken($app_ref, $token);
+    $app['session']->addToken($app_ref, $token);
 
-    return $app->redirect($back_uri);
+    return $app->redirect(sprintf("http://%s%s", $app_ref, $back_uri));
 
 })->bind('check_auth');
 

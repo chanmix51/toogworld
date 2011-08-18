@@ -8,6 +8,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session
 {
     protected $container;
     protected $user;
+    protected $connection;
 
     public function setContainer($app)
     {
@@ -30,9 +31,9 @@ class Session extends \Symfony\Component\HttpFoundation\Session
                 ->getMapFor('Model\Pomm\Entity\Toogworld\AppAuth');
 
             $map->deleteTokensForUser($user);
-            $this->addToken($app_ref, $token, $map);
+            $this->addToken($this->get('app_ref'), $this->get('token'), $map);
 
-            $url_back = sprintf("http://%s%s", $this->get('app_ref'), $this->get('back_uri', '/'));
+            $url_back = sprintf("http://%s/%s", $this->get('app_ref'), $this->get('back_uri', ''));
 
             $this->remove('app_ref');
             $this->remove('token');
@@ -49,6 +50,9 @@ class Session extends \Symfony\Component\HttpFoundation\Session
 
     public function deauthenticate()
     {
+        $this->connection->getMapFor('Model\Pomm\Entity\Toogworld\AppAuth')
+            ->deleteTokensForUser($this->getUser());
+
         $this->remove('user_id');
         $this->remove('tokens');
         $this->user = null;
@@ -59,7 +63,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session
         if (is_null($this->user) && ($this->isAuthenticated()))
         {
             $this->user = $this->connection
-                ->getMapFor('Model\Pomm\Entity\Toogworld')
+                ->getMapFor('Model\Pomm\Entity\Toogworld\MyUser')
                 ->findByPk(array('id' => $this->get('user_id')));
         }
 
