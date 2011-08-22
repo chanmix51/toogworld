@@ -17,6 +17,7 @@ class AccessControlMap extends BaseAccessControlMap
 
         return $values;
     }
+
     protected function generateValuesFromTools($user_id, Array $tool_ids)
     {
         $values = array();

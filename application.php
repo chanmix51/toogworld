@@ -190,15 +190,21 @@ $app->get('/users/tool/{tool_id}', function($tool_id) use ($app) {
 });
 
 $app->post('/users/tool', function() use ($app) {
-    $app['db']->getMapFor('Model\Pomm\Entity\Toogworld\AccessControl')
-        ->updateUser($app['request']->get('tool'));
+    if ($app['request']->request->has('tool'))
+    {
+        $app['db']->getMapFor('Model\Pomm\Entity\Toogworld\AccessControl')
+            ->updateUser($app['request']->get('tool'));
+    }
 
     return $app->redirect('/users');
 })->bind('grant_acls_by_tool');
 
 $app->post('/users/user', function() use ($app) {
-    $app['db']->getMapFor('Model\Pomm\Entity\Toogworld\AccessControl')
-        ->updateTool($app['request']->get('user'));
+    if ($app['request']->request->has('user'))
+    {
+        $app['db']->getMapFor('Model\Pomm\Entity\Toogworld\AccessControl')
+            ->updateTool($app['request']->get('user'));
+    }
 
     return $app->redirect('/users');
 })->bind('grant_acls_by_user');
