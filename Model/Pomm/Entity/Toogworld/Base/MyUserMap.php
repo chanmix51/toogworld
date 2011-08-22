@@ -17,6 +17,7 @@ abstract class MyUserMap extends BaseObjectMap
         $this->addField('password', 'String');
         $this->addField('is_active', 'Boolean');
         $this->addField('password_nuke', 'Number');
+        $this->addField('super_user', 'Boolean');
 
         $this->pk_fields = array('id');
     }

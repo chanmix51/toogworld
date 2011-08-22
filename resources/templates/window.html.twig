@@ -1,0 +1,3 @@
+{% autoescape true js %}
+<ul> {% for tool in tools %} <li><a href='http://{{ tool.url }}'><img src='/images/icons/{{ icon.type | default('application') }}.png' />{{ tool.name }}</a></li> {% endfor %} </ul>\
+{% endautoescape %}

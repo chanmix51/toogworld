@@ -52,4 +52,6 @@ $app->register(new Silex\Extension\TwigExtension(), array(
     'twig.class_path' => __DIR__.'/vendor/Twig/lib',
 ));
 
+$app->register(new Silex\Extension\UrlGeneratorExtension());
+
 return $app;

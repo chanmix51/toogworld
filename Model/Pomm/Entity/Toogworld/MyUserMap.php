@@ -29,4 +29,14 @@ class MyUserMap extends BaseMyUserMap
 
         return array_filter($fields, function($val) use ($alias) { return $val !== sprintf("%spassword", $alias); });
     }
+
+    public function findAllWithToolInfo(Tool $tool) 
+    {
+        $fields = $this->getSelectFields();
+        $fields[] = sprintf("EXISTS (SELECT ac.user_id FROM %s ac WHERE ac.tool_id = ?) AS granted", $this->connection->getMapFor('Model\Pomm\Entity\Toogworld\AccessControl')->getTableName());
+
+        $sql = sprintf("SELECT %s FROM %s mu ORDER BY mu.email ASC", join(', ', $fields), $this->getTableName());
+
+        return $this->query($sql, array($tool->getId()));
+    }
 }

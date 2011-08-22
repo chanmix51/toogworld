@@ -1,0 +1,40 @@
+{% extends "layout.html.twig" %}
+{% block title %}Users management console.{% endblock %}
+{% block javascript %}
+        <script type="text/javascript" src="/js/jquery-1.6.2.min.js" ></script>
+        <script type="text/javascript">
+//<![CDATA[
+$('document').ready(function() {
+    $('#select_user').change(function() { 
+        var user_id = '';
+        $('#select_user option:selected').each(function() { user_id += this.value });
+        document.location='{{ app.url_generator.generate('users') }}/user/'+user_id; 
+    });
+    $('#select_tool').change(function() { 
+        var tool_id = '';
+        $('#select_tool option:selected').each(function() { tool_id += this.value });
+        document.location='{{ app.url_generator.generate('users') }}/tool/'+tool_id; 
+    });
+});
+// !>
+        </script>
+{% endblock %}
+
+{% block body %}
+<div>ACLs par utilisateur.
+    <select id="select_user" name="by_user">
+      <option>Utilisateur</option>
+    {% for user in users %}
+      <option value="{{ user.id }}">{{ user.email }}</option>
+    {% endfor %}
+    </select>
+</div>
+<div>ACLs par outil.
+    <select id="select_tool" name="by_tool">
+      <option>Outil</option>
+    {% for tool in tools %}
+      <option value="{{ tool.id }}">{{ tool.name }}</option>
+    {% endfor %}
+    </select>
+</div>
+{% endblock %}

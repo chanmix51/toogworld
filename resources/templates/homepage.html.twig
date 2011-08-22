@@ -1,0 +1,32 @@
+{% extends "layout.html.twig" %}
+{% block title %}Welcome to your world.{% endblock %}
+{% block css %}
+        <link type="text/css" rel="stylesheet" href="/css/jquery.windows-engine.css" />
+{% endblock %}
+{% block javascript %}
+        <script type="text/javascript" src="/js/jquery-1.6.2.min.js" ></script>
+        <script type="text/javascript" src="/js/jquery.windows-engine.js" ></script>
+        <script type="text/javascript">
+        //<![CDATA[
+var pos = 0;
+var columns = 3;
+$(document).ready(function() {
+{% for zone, content in tools %}
+    $.newWindow({id: "{{ zone }}", title: "{{ zone }}", closeButton: false, posy:  50 + 250 * Math.floor(pos / columns), posx: 50 + (350*(pos % columns)), content: "{{ content | raw }}" });
+    pos++;
+{% endfor %}
+    $('#user_mgmt').click(function() { 
+        $.newWindow({id: "user_mgmt_console", title: "User management console", height: 400, width: 600, type: "iframe"}); 
+        $.updateWindowContent('user_mgmt_console', '<iframe src="http://world.toogworld.net{{ app.url_generator.generate('users') }}" width="600" height="400"  />'); 
+    });
+});
+        //!>
+        </script>
+{% endblock %}
+{% block body %}
+        {% if app.session.getUser.getSuperUser %}
+        <a id="user_mgmt" href="#"><img src="/images/icons/user_suit.png" />&nbsp;Gestion utilisateurs</a>&nbsp;|&nbsp;
+        {% endif %}
+        <a href="{{ app.url_generator.generate('logout') }}"><img src="/images/icons/door_in.png" />&nbsp;Déconnexion</a>
+{% endblock %}
+

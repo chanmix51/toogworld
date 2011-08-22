@@ -4,11 +4,41 @@ use Symfony\Component\HttpFoundation\Response;
 
 $app = require __DIR__.'/bootstrap.php';
 
+$app['windows_content'] = $app->protect(function($all_tools) use ($app) {
+    $tools = array();
+    foreach($all_tools as $tool)
+    {
+        $zone = $tool->get('zone', '/');
+
+        if (!array_key_exists($zone, $tools)) 
+        {
+            $tools[$zone] = array();
+        }
+
+        $tools[$zone][$tool->getRankInZone()] = $tool;
+    }
+
+    $windows = array();
+    foreach ($tools as $zone => $z_tools)
+    {
+        $windows[$zone] = $app['twig']->render('window.html.twig', array('tools' => $z_tools));
+    }
+
+    return $windows;
+});
+
 /* ERROR HANDLING */
 $app->error(function (\Exception $e, $code) use ($app) {
     if ($e instanceof UnauthorizedException)
     {
-        return $app->redirect('/login');
+        switch($code)
+        {
+            case "1":
+                return $app->redirect('/');
+                break;
+            default:
+                return $app->redirect('/login');
+        }
     }
 
     if ($app['debug']) 
@@ -18,6 +48,7 @@ $app->error(function (\Exception $e, $code) use ($app) {
     // TODO: error & 404 page
 });
 
+/* ACCESS RIGHT */
 $app['check_auth'] = $app->protect(function() use ($app) {
     if (($app['session']->isAuthenticated()))
     {
@@ -26,6 +57,15 @@ $app['check_auth'] = $app->protect(function() use ($app) {
     throw new UnauthorizedException();
 });
 
+$app['check_superuser'] = $app->protect(function() use ($app) {
+    $app['check_auth']();
+    if (!$app['session']->getUser()->getSuperUser())
+    {
+        throw new UnauthorizedException('Must have administrator privileges to access this resource.', 1);
+    }
+});
+
+/* CONTROLLERS */
 $app->get('/login', function() use ($app) {
     try
     {
@@ -64,13 +104,7 @@ $app->get('/logout', function() use ($app) {
     $app['session']->deauthenticate();
 
     return $app->redirect('/login');
-})->bind('logout');
-
-$app->get('/logout', function() use ($app) {
-    $app['session']->deauthenticate();
-
-    return $app->redirect('/login');
-})->bind('logout');
+})->bind ('logout');
 
 $app->get('/check_auth/{app_ref}/{back_uri}/{token}', function($app_ref, $back_uri, $token) use ($app) {
     try
@@ -110,7 +144,63 @@ $app->get('/confirm_auth/{app_ref}/{token}', function($app_ref, $token) use ($ap
 
 $app->get('/', function() use ($app) {
     $app['check_auth']();
-    return 'HOMEPAGE';
+
+    $tools = array();
+    $all_tools = $app['db']->getMapFor('Model\Pomm\Entity\Toogworld\Tool')
+        ->getForUser($app['session']->getUser());
+
+
+
+    return $app['twig']->render('homepage.html.twig', array('tools' => $app['windows_content']($all_tools)));
 })->bind('homepage');
+
+$app->get('/users', function() use($app) {
+    $app['check_superuser']();
+
+    $users = $app['db']->getMapFor('Model\Pomm\Entity\Toogworld\MyUser')
+        ->findAll();
+
+    $tools = $app['db']->getMapFor('Model\Pomm\Entity\Toogworld\Tool')
+        ->findAll();
+
+
+    return $app['twig']->render('users_main.html.twig', array('users' => $users, 'tools' => $tools));
+})->bind('users');
+
+$app->get('/users/user/{user_id}', function($user_id) use ($app) {
+    $app['check_superuser']();
+    $user = $app['db']->getMapFor('Model\Pomm\Entity\Toogworld\MyUser')
+        ->findByPk(array('id' => $user_id));
+
+    $tools = $app['db']->getMapFor('Model\Pomm\Entity\Toogworld\Tool')
+        ->findAllWithUserInfo($user);
+
+    return $app['twig']->render('users_user.html.twig', array('user' => $user, 'tools' => $tools));
+});
+
+$app->get('/users/tool/{tool_id}', function($tool_id) use ($app) {
+    $app['check_superuser']();
+    $tool = $app['db']->getMapFor('Model\Pomm\Entity\Toogworld\Tool')
+        ->findByPk(array('id' => $tool_id));
+
+    $users = $app['db']->getMapFor('Model\Pomm\Entity\Toogworld\MyUser')
+        ->findAllWithToolInfo($tool);
+
+    return $app['twig']->render('users_tool.html.twig', array('tool' => $tool, 'users' => $users));
+});
+
+$app->post('/users/tool', function() use ($app) {
+    $app['db']->getMapFor('Model\Pomm\Entity\Toogworld\AccessControl')
+        ->updateUser($app['request']->get('tool'));
+
+    return $app->redirect('/users');
+})->bind('grant_acls_by_tool');
+
+$app->post('/users/user', function() use ($app) {
+    $app['db']->getMapFor('Model\Pomm\Entity\Toogworld\AccessControl')
+        ->updateTool($app['request']->get('user'));
+
+    return $app->redirect('/users');
+})->bind('grant_acls_by_user');
 
 return $app;

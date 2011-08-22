@@ -1,0 +1,15 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}Users management console.{% endblock %}
+
+{% block body %}
+<form id="acls_form" action="{{ app.url_generator.generate('grant_acls_by_user') }}" method="post">
+<ul>
+{% for user in users %}
+  <li>{{ user.email }} <input type="checkbox" name="user[{{ tool.id }}][{{ user.id }}]" {{ user.granted == 1 ? 'checked="true "' : ''}}/></li>
+{% endfor %}
+</ul>
+<input type="submit" name="submit" value="ok" />
+</form>
+{% endblock %}
+

@@ -30,8 +30,15 @@ class AppAuthMap extends BaseAppAuthMap
 
         $sql = sprintf("SELECT %s,%s FROM %s au JOIN %s mu ON au.user_id = mu.id WHERE %s", join(', ', $this->getSelectFields('au')), join(', ', $user_map->getSelectFields('mu')), $this->object_name, $user_map->getTableName(), $this->createSqlAndFrom($pk, 'au'));
 
-        $app_auth = $this->query($sql, array_values($pk), array($user_map));
+        $app_auths = $this->query($sql, array_values($pk));
+        if (!$app_auths->isEmpty())
+        {
+            $app_auth = $app_auths[0];
+            $app_auth->set('MyUser', $user_map->createObject()->hydrate($app_auth->extract()));
 
-        return $app_auth->isEmpty() ? false : $app_auth[0];
+            return $app_auth;
+        }
+
+        return false;
     }
 }

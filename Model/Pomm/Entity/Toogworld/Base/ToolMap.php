@@ -19,6 +19,7 @@ abstract class ToolMap extends BaseObjectMap
         $this->addField('zone_slug', 'String');
         $this->addField('url', 'String');
         $this->addField('type', 'String');
+        $this->addField('created_at', 'Timestamp');
 
         $this->pk_fields = array('id');
     }
