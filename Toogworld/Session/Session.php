@@ -40,6 +40,11 @@ class Session extends \Symfony\Component\HttpFoundation\Session
             $this->remove('back_uri');
         }
 
+        if ($user['password_nuke'] > 0 && --$user['password_nuke'] == 0)
+        {
+            $url_back = '/nuke_password';
+        }
+
         return $url_back;
     }
 

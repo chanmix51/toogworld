@@ -209,4 +209,45 @@ $app->post('/users/user', function() use ($app) {
     return $app->redirect('/users');
 })->bind('grant_acls_by_user');
 
+$app->get('/nuke_password', function() use ($app) {
+    $app['check_auth']();
+
+    return $app['twig']->render('password_nuke.html.twig');
+});
+
+$app->post('/nuke_password', function() use ($app) {
+    $app['check_auth']();
+
+    $pass = $app['request']->get('password');
+    $user = $app['session']->getUser();
+    $error_msg = '';
+
+    if ($app['db']->getMapFor('Model\Pomm\Entity\Toogworld\MyUser')->validateLogin($user->getEmail(), $pass))
+    {
+        $error_msg = 'Vous devez indiquer un nouveau mot de passe.';
+    }
+    elseif ($pass !== $app['request']->get('password_bis'))
+    {
+        $error_msg = 'Les mots de passe ne coincident pas.';
+    }
+    else
+    {
+        try
+        {
+            $user->setPassword($pass);
+            $user->setPasswordNuke(mt_rand(20, 50));
+            $app['db']->getMapFor('Model\Pomm\Entity\Toogworld\MyUser')
+                ->saveOne($user);
+
+            return $app->redirect('/');
+        }
+        catch(\ValidationException $e)
+        {
+            $error_msg = 'Le mot de passe est invalide. Il doit comporter au moins 10 caractères dont 8 lettres.';
+        }
+    }
+
+    return $app['twig']->render('password_nuke.html.twig', array('error_msg' => $error_msg));
+})->bind('pass_change');
+
 return $app;

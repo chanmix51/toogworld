@@ -2,6 +2,7 @@
 
 require __DIR__.'/vendor/silex.phar';
 require __DIR__.'/resources/exceptions/UnauthorizedException.php';
+require __DIR__.'/resources/exceptions/ValidationException.php';
 
 use Silex\Application;
 use Silex\Extension\TwigExtension;
