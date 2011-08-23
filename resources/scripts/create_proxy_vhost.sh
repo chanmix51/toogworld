@@ -48,4 +48,6 @@ then
   error_and_exit 6 "Quitting.";
 fi
 
+echo ${IP_ADDR}
+
 exit 0;
