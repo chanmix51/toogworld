@@ -8,7 +8,7 @@ use Silex\Application;
 use Silex\Extension\TwigExtension;
 use GHub\PommExtension\PommExtension;
 
-$db_dsn = array('dev' => 'pgsql://greg:omevGink8@172.16.0.1/greg');
+$config = array('db_dsn' => 'pgsql://world:{db-password}@{db-host}/{world}');
 $app = new Application();
 
 /* DEBUG */
@@ -41,7 +41,7 @@ $app->register(
         'pomm.class_path' => __DIR__.'/vendor/pomm', 
         'pomm.connections' => array(
             'default' => array(
-                'dsn' => $db_dsn[ENV],
+                'dsn' => $config['db_dsn'],
             )))
         );
 
