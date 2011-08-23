@@ -113,7 +113,7 @@ $app->get('/check_auth/{app_ref}/{back_uri}/{token}', function($app_ref, $back_u
     }
     catch(UnauthorizedException $e)
     {
-        $app['session']->set('back_uri', $app['request']->get('back_uri'));
+        $app['session']->set('url_back', sprintf("http://%s/%s", $app_ref, $back_uri));
         $app['session']->set('token', $token);
         $app['session']->set('app_ref', $app_ref);
 
@@ -239,7 +239,10 @@ $app->post('/nuke_password', function() use ($app) {
             $app['db']->getMapFor('Model\Pomm\Entity\Toogworld\MyUser')
                 ->saveOne($user);
 
-            return $app->redirect('/');
+            $url_back = $app['session']->get('url_back', '/');
+            $app['session']->remove('url_back');
+
+            return $app->redirect($url_back);
         }
         catch(\ValidationException $e)
         {

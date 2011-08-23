@@ -33,16 +33,19 @@ class Session extends \Symfony\Component\HttpFoundation\Session
             $map->deleteTokensForUser($user);
             $this->addToken($this->get('app_ref'), $this->get('token'), $map);
 
-            $url_back = sprintf("http://%s/%s", $this->get('app_ref'), $this->get('back_uri', ''));
+            $url_back = $this->get('url_back');
 
             $this->remove('app_ref');
             $this->remove('token');
-            $this->remove('back_uri');
         }
 
         if ($user['password_nuke'] > 0 && --$user['password_nuke'] == 0)
         {
             $url_back = '/nuke_password';
+        }
+        elseif ($this->has('url_back'))
+        {
+            $this->remove('url_back');
         }
 
         return $url_back;
