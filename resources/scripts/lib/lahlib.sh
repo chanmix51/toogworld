@@ -279,7 +279,7 @@ parse_model_base_file() {
   local file;
   for file in ${WORLD_DIR}/rootfs/var/www/world/Model/Pomm/Entity/Toogworld/Base/*; 
   do
-    must "sed -i '/{world}/${WORLD_NAME}/g' ${file}" \
+    must "sed -i \"s/{world}/${WORLD_NAME}/g\" ${file}" \
          "Error while parsing model file '${file}'." \
          || return 1;
   done
