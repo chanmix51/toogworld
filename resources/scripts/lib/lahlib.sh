@@ -161,6 +161,7 @@ CREATE SCHEMA "${DB_USER}" AUTHORIZATION "${DB_USER}";
 REVOKE ALL PRIVILEGES ON SCHEMA public FROM public;
 GRANT ALL PRIVILEGES ON SCHEMA public TO "${DB_USER}" WITH GRANT OPTION;
 GRANT USAGE ON SCHEMA public TO public;
+GRANT ALL PRIVILEGES ON LANGUAGE plpgsql TO "${DB_USER}";
 COMMIT;
 EOSQL
   case "$?" in
@@ -259,13 +260,13 @@ configure_world_application() {
   must "grep -qi '{db-password}' ${bootstrap_file} && grep -qi '{db-host}' ${bootstrap_file} && grep -qi '{world}' ${bootstrap_file}" \
         "Expexted pattern not found in '${bootstrap_file}'." \
         || return 1; 
-  must "sed -i \"s/{db-password}/${DB_PASS}/\" ${bootstrap_file}" \
+  must "sed -i \"s/{db-password}/${DB_PASS}/g\" ${bootstrap_file}" \
        "Error while parsing '${bootstrap_file}'." \
         || return 1;
-  must "sed -i \"s/{db-host}/${DB_HOST}/\" ${bootstrap_file}" \
+  must "sed -i \"s/{db-host}/${DB_HOST}/g\" ${bootstrap_file}" \
        "Error while parsing '${bootstrap_file}'." \
         || return 1;
-  must "sed -i \"s/{world}/${WORLD_NAME}/\" ${bootstrap_file}" \
+  must "sed -i \"s/{world}/${WORLD_NAME}/g\" ${bootstrap_file}" \
        "Error while parsing '${bootstrap_file}'." \
         || return 1;
   must "chroot --userspec=33.33 ${WORLD_DIR}/rootfs /usr/bin/php /var/www/world/install.php 2>/dev/null" \

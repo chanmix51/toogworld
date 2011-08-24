@@ -18,11 +18,11 @@ class MyUser extends BaseObject
 
         if ($this->validatePassword($password))
         {
-            parent::set('password', Cryptlib::encrypt($password, $this->email));
+            parent::set('password', Cryptlib::encrypt($password, $this['email']));
         }
         else 
         {
-            throw new ValidationException("Invalid password.");
+            throw new \ValidationException("Invalid password.");
         }
     }
 

@@ -10,18 +10,16 @@ SET client_min_messages = warning;
 SET escape_string_warning = off;
 
 --
--- Name: toogworld; Type: SCHEMA; Schema: -; Owner: greg
+-- Name: toogworld; Type: SCHEMA; Schema: -; Owner: -
 --
 
-CREATE SCHEMA toogworld;
+-- CREATE SCHEMA toogworld;
 
 
-ALTER SCHEMA toogworld OWNER TO greg;
-
-SET search_path = toogworld, pg_catalog;
+-- SET search_path = toogworld, pg_catalog;
 
 --
--- Name: array_merge(anyarray, anyarray); Type: FUNCTION; Schema: toogworld; Owner: greg
+-- Name: array_merge(anyarray, anyarray); Type: FUNCTION; Schema: toogworld; Owner: -
 --
 
 CREATE FUNCTION array_merge(array1 anyarray, array2 anyarray) RETURNS anyarray
@@ -43,10 +41,8 @@ CREATE FUNCTION array_merge(array1 anyarray, array2 anyarray) RETURNS anyarray
 $$;
 
 
-ALTER FUNCTION toogworld.array_merge(array1 anyarray, array2 anyarray) OWNER TO greg;
-
 --
--- Name: cut_nicely(character varying, integer); Type: FUNCTION; Schema: toogworld; Owner: greg
+-- Name: cut_nicely(character varying, integer); Type: FUNCTION; Schema: toogworld; Owner: -
 --
 
 CREATE FUNCTION cut_nicely(my_string character varying, my_length integer) RETURNS character varying
@@ -65,10 +61,8 @@ CREATE FUNCTION cut_nicely(my_string character varying, my_length integer) RETUR
 $$;
 
 
-ALTER FUNCTION toogworld.cut_nicely(my_string character varying, my_length integer) OWNER TO greg;
-
 --
--- Name: is_email(character varying); Type: FUNCTION; Schema: toogworld; Owner: greg
+-- Name: is_email(character varying); Type: FUNCTION; Schema: toogworld; Owner: -
 --
 
 CREATE FUNCTION is_email(email character varying) RETURNS boolean
@@ -80,10 +74,8 @@ END;
 $_$;
 
 
-ALTER FUNCTION toogworld.is_email(email character varying) OWNER TO greg;
-
 --
--- Name: is_url(character varying); Type: FUNCTION; Schema: toogworld; Owner: greg
+-- Name: is_url(character varying); Type: FUNCTION; Schema: toogworld; Owner: -
 --
 
 CREATE FUNCTION is_url(url character varying) RETURNS boolean
@@ -95,10 +87,8 @@ END;
 $_$;
 
 
-ALTER FUNCTION toogworld.is_url(url character varying) OWNER TO greg;
-
 --
--- Name: slugify(character varying); Type: FUNCTION; Schema: toogworld; Owner: greg
+-- Name: slugify(character varying); Type: FUNCTION; Schema: toogworld; Owner: -
 --
 
 CREATE FUNCTION slugify(string character varying) RETURNS character varying
@@ -110,10 +100,8 @@ CREATE FUNCTION slugify(string character varying) RETURNS character varying
 $$;
 
 
-ALTER FUNCTION toogworld.slugify(string character varying) OWNER TO greg;
-
 --
--- Name: transliterate(character varying); Type: FUNCTION; Schema: toogworld; Owner: greg
+-- Name: transliterate(character varying); Type: FUNCTION; Schema: toogworld; Owner: -
 --
 
 CREATE FUNCTION transliterate(my_text character varying) RETURNS character varying
@@ -136,10 +124,8 @@ CREATE FUNCTION transliterate(my_text character varying) RETURNS character varyi
 $$;
 
 
-ALTER FUNCTION toogworld.transliterate(my_text character varying) OWNER TO greg;
-
 --
--- Name: update_updated_at(); Type: FUNCTION; Schema: toogworld; Owner: greg
+-- Name: update_updated_at(); Type: FUNCTION; Schema: toogworld; Owner: -
 --
 
 CREATE FUNCTION update_updated_at() RETURNS trigger
@@ -153,14 +139,12 @@ CREATE FUNCTION update_updated_at() RETURNS trigger
 $$;
 
 
-ALTER FUNCTION toogworld.update_updated_at() OWNER TO greg;
-
 SET default_tablespace = '';
 
 SET default_with_oids = false;
 
 --
--- Name: access_control; Type: TABLE; Schema: toogworld; Owner: greg; Tablespace: 
+-- Name: access_control; Type: TABLE; Schema: toogworld; Owner: -; Tablespace: 
 --
 
 CREATE TABLE access_control (
@@ -170,10 +154,8 @@ CREATE TABLE access_control (
 );
 
 
-ALTER TABLE toogworld.access_control OWNER TO greg;
-
 --
--- Name: app_auth; Type: TABLE; Schema: toogworld; Owner: greg; Tablespace: 
+-- Name: app_auth; Type: TABLE; Schema: toogworld; Owner: -; Tablespace: 
 --
 
 CREATE TABLE app_auth (
@@ -184,10 +166,8 @@ CREATE TABLE app_auth (
 );
 
 
-ALTER TABLE toogworld.app_auth OWNER TO greg;
-
 --
--- Name: my_user; Type: TABLE; Schema: toogworld; Owner: greg; Tablespace: 
+-- Name: my_user; Type: TABLE; Schema: toogworld; Owner: -; Tablespace: 
 --
 
 CREATE TABLE my_user (
@@ -201,10 +181,8 @@ CREATE TABLE my_user (
 );
 
 
-ALTER TABLE toogworld.my_user OWNER TO greg;
-
 --
--- Name: my_user_id_seq; Type: SEQUENCE; Schema: toogworld; Owner: greg
+-- Name: my_user_id_seq; Type: SEQUENCE; Schema: toogworld; Owner: -
 --
 
 CREATE SEQUENCE my_user_id_seq
@@ -215,17 +193,15 @@ CREATE SEQUENCE my_user_id_seq
     CACHE 1;
 
 
-ALTER TABLE toogworld.my_user_id_seq OWNER TO greg;
-
 --
--- Name: my_user_id_seq; Type: SEQUENCE OWNED BY; Schema: toogworld; Owner: greg
+-- Name: my_user_id_seq; Type: SEQUENCE OWNED BY; Schema: toogworld; Owner: -
 --
 
 ALTER SEQUENCE my_user_id_seq OWNED BY my_user.id;
 
 
 --
--- Name: tool; Type: TABLE; Schema: toogworld; Owner: greg; Tablespace: 
+-- Name: tool; Type: TABLE; Schema: toogworld; Owner: -; Tablespace: 
 --
 
 CREATE TABLE tool (
@@ -240,10 +216,8 @@ CREATE TABLE tool (
 );
 
 
-ALTER TABLE toogworld.tool OWNER TO greg;
-
 --
--- Name: tool_id_seq; Type: SEQUENCE; Schema: toogworld; Owner: greg
+-- Name: tool_id_seq; Type: SEQUENCE; Schema: toogworld; Owner: -
 --
 
 CREATE SEQUENCE tool_id_seq
@@ -254,31 +228,29 @@ CREATE SEQUENCE tool_id_seq
     CACHE 1;
 
 
-ALTER TABLE toogworld.tool_id_seq OWNER TO greg;
-
 --
--- Name: tool_id_seq; Type: SEQUENCE OWNED BY; Schema: toogworld; Owner: greg
+-- Name: tool_id_seq; Type: SEQUENCE OWNED BY; Schema: toogworld; Owner: -
 --
 
 ALTER SEQUENCE tool_id_seq OWNED BY tool.id;
 
 
 --
--- Name: id; Type: DEFAULT; Schema: toogworld; Owner: greg
+-- Name: id; Type: DEFAULT; Schema: toogworld; Owner: -
 --
 
 ALTER TABLE my_user ALTER COLUMN id SET DEFAULT nextval('my_user_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: toogworld; Owner: greg
+-- Name: id; Type: DEFAULT; Schema: toogworld; Owner: -
 --
 
 ALTER TABLE tool ALTER COLUMN id SET DEFAULT nextval('tool_id_seq'::regclass);
 
 
 --
--- Name: access_control_pkey; Type: CONSTRAINT; Schema: toogworld; Owner: greg; Tablespace: 
+-- Name: access_control_pkey; Type: CONSTRAINT; Schema: toogworld; Owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY access_control
@@ -286,7 +258,7 @@ ALTER TABLE ONLY access_control
 
 
 --
--- Name: app_auth_pkey; Type: CONSTRAINT; Schema: toogworld; Owner: greg; Tablespace: 
+-- Name: app_auth_pkey; Type: CONSTRAINT; Schema: toogworld; Owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY app_auth
@@ -294,7 +266,7 @@ ALTER TABLE ONLY app_auth
 
 
 --
--- Name: my_user_email_key; Type: CONSTRAINT; Schema: toogworld; Owner: greg; Tablespace: 
+-- Name: my_user_email_key; Type: CONSTRAINT; Schema: toogworld; Owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY my_user
@@ -302,7 +274,7 @@ ALTER TABLE ONLY my_user
 
 
 --
--- Name: my_user_pkey; Type: CONSTRAINT; Schema: toogworld; Owner: greg; Tablespace: 
+-- Name: my_user_pkey; Type: CONSTRAINT; Schema: toogworld; Owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY my_user
@@ -310,7 +282,7 @@ ALTER TABLE ONLY my_user
 
 
 --
--- Name: tool_pkey; Type: CONSTRAINT; Schema: toogworld; Owner: greg; Tablespace: 
+-- Name: tool_pkey; Type: CONSTRAINT; Schema: toogworld; Owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY tool
@@ -318,7 +290,7 @@ ALTER TABLE ONLY tool
 
 
 --
--- Name: access_control_tool_id_fkey; Type: FK CONSTRAINT; Schema: toogworld; Owner: greg
+-- Name: access_control_tool_id_fkey; Type: FK CONSTRAINT; Schema: toogworld; Owner: -
 --
 
 ALTER TABLE ONLY access_control
@@ -326,7 +298,7 @@ ALTER TABLE ONLY access_control
 
 
 --
--- Name: access_control_user_id_fkey; Type: FK CONSTRAINT; Schema: toogworld; Owner: greg
+-- Name: access_control_user_id_fkey; Type: FK CONSTRAINT; Schema: toogworld; Owner: -
 --
 
 ALTER TABLE ONLY access_control
@@ -334,7 +306,7 @@ ALTER TABLE ONLY access_control
 
 
 --
--- Name: app_auth_user_id_fkey; Type: FK CONSTRAINT; Schema: toogworld; Owner: greg
+-- Name: app_auth_user_id_fkey; Type: FK CONSTRAINT; Schema: toogworld; Owner: -
 --
 
 ALTER TABLE ONLY app_auth

@@ -12,7 +12,7 @@ try
     $user = $app['db']->getMapFor('Model\Pomm\Entity\Toogworld\MyUser')
         ->createObject();
     $user->setEmail(sprintf('admin@%s.toogworld.net', WORLD));
-    $user->setPassword('admin');
+    $user->setPassword('administrateur');
     $user->setSuperUser(true);
     $user = $app['db']->getMapFor('Model\Pomm\Entity\Toogworld\MyUser')
         ->saveOne($user);
