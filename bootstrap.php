@@ -10,7 +10,7 @@ use Silex\Application;
 use Silex\Extension\TwigExtension;
 use GHub\PommExtension\PommExtension;
 
-$config = array('db_dsn' => 'pgsql://world:{db-password}@{db-host}/{world}');
+$config = array('db_dsn' => 'pgsql://{world}/world:{db-password}@{db-host}/{world}');
 $app = new Application();
 
 /* DEBUG */

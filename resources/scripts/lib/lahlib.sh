@@ -13,7 +13,6 @@ configure_lxc_container() {
   local config_file=${WORLD_DIR}/config;
   local if_file=${WORLD_DIR}/rootfs/etc/network/interfaces;
   local nginx_file=${WORLD_DIR}/rootfs/etc/nginx/sites-available/world
-  local bootstrap_file=${WORLD_DIR}/rootfs/var/www/world/bootstrap.php
 
   must "grep -q 'template' ${config_file}" \
        "No template to substitute in ${config_file}." \
@@ -34,20 +33,6 @@ configure_lxc_container() {
   must "sed -i \"s/{ip_address}/$IP_ADDR/\" ${if_file}" \
        "Error while parsing '${if_file}'." \
         || return 1;
-  must "grep -qi '{db-password}' ${bootstrap_file} && grep -qi '{db-host}' ${bootstrap_file} && grep -qi '{world}' ${bootstrap_file}" \
-        "Expexted pattern not found in '${bootstrap_file}'." \
-        || return 1; 
-  must "sed -i \"s/{db-password}/${DB_PASS}/\" ${bootstrap_file}" \
-       "Error while parsing '${bootstrap_file}'." \
-        || return 1;
-  must "sed -i \"s/{db-host}/${DB_HOST}/\" ${bootstrap_file}" \
-       "Error while parsing '${bootstrap_file}'." \
-        || return 1;
-  must "sed -i \"s/{world}/${WORLD_NAME}/\" ${bootstrap_file}" \
-       "Error while parsing '${bootstrap_file}'." \
-        || return 1;
-
-  warning "The world application configuration is skipped for now.";
 }
 
 destroy_lxc_container() {
@@ -60,7 +45,7 @@ destroy_lxc_container() {
     must "lxc-stop -n ${WORLD_NAME}" \
          "Could not stop world '${WORLD_NAME}'." \
           || return 1;
-    sleep 5;
+    sleep 3
   fi;
   must "rm -rf ${WORLD_DIR}" \
        "Could not delete LXC container '${WORLD_DIR}'." \
@@ -266,4 +251,24 @@ postgresql_reload() {
   must "/etc/init.d/postgresql reload 2>/dev/null" \
     "Could not signal postgresql for reloading configuration." \
     return 1;
+}
+
+configure_world_application() {
+  local bootstrap_file=${WORLD_DIR}/rootfs/var/www/world/bootstrap.php
+
+  must "grep -qi '{db-password}' ${bootstrap_file} && grep -qi '{db-host}' ${bootstrap_file} && grep -qi '{world}' ${bootstrap_file}" \
+        "Expexted pattern not found in '${bootstrap_file}'." \
+        || return 1; 
+  must "sed -i \"s/{db-password}/${DB_PASS}/\" ${bootstrap_file}" \
+       "Error while parsing '${bootstrap_file}'." \
+        || return 1;
+  must "sed -i \"s/{db-host}/${DB_HOST}/\" ${bootstrap_file}" \
+       "Error while parsing '${bootstrap_file}'." \
+        || return 1;
+  must "sed -i \"s/{world}/${WORLD_NAME}/\" ${bootstrap_file}" \
+       "Error while parsing '${bootstrap_file}'." \
+        || return 1;
+  must "chroot --userspec=33.33 ${WORLD_DIR}/rootfs /usr/bin/php /var/www/world/install.php 2>/dev/null" \
+        "Could not execute the configuration script 'install.php' in world." \
+        || return 1;
 }
