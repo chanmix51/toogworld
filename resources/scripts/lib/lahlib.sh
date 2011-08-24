@@ -269,7 +269,18 @@ configure_world_application() {
   must "sed -i \"s/{world}/${WORLD_NAME}/g\" ${bootstrap_file}" \
        "Error while parsing '${bootstrap_file}'." \
         || return 1;
-  must "chroot --userspec=33.33 ${WORLD_DIR}/rootfs /usr/bin/php /var/www/world/install.php 2>/dev/null" \
+  parse_model_base_file || return 1;
+  must "chroot --userspec=33.33 ${WORLD_DIR}/rootfs /usr/bin/php /var/www/world/install.php >/dev/null" \
         "Could not execute the configuration script 'install.php' in world." \
         || return 1;
+}
+
+parse_model_base_file() {
+  local file;
+  for file in ${WORLD_DIR}/rootfs/var/www/world/Model/Pomm/Entity/Toogworld/Base/*; 
+  do
+    must "sed -i '/{world}/${WORLD_NAME}/g' ${file}" \
+         "Error while parsing model file '${file}'." \
+         || return 1;
+  done
 }

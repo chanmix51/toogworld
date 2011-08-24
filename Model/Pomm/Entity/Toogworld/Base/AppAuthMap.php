@@ -10,7 +10,7 @@ abstract class AppAuthMap extends BaseObjectMap
     public function initialize()
     {
         $this->object_class =  'Model\Pomm\Entity\Toogworld\AppAuth';
-        $this->object_name  =  'toogworld.app_auth';
+        $this->object_name  =  '{world}°world.app_auth';
 
         $this->addField('app_ref', 'String');
         $this->addField('token', 'String');

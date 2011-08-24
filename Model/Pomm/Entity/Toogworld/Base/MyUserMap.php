@@ -10,7 +10,7 @@ abstract class MyUserMap extends BaseObjectMap
     public function initialize()
     {
         $this->object_class =  'Model\Pomm\Entity\Toogworld\MyUser';
-        $this->object_name  =  'toogworld.my_user';
+        $this->object_name  =  '{world}°world.my_user';
 
         $this->addField('id', 'Number');
         $this->addField('email', 'String');

@@ -10,7 +10,7 @@ abstract class ToolMap extends BaseObjectMap
     public function initialize()
     {
         $this->object_class =  'Model\Pomm\Entity\Toogworld\Tool';
-        $this->object_name  =  'toogworld.tool';
+        $this->object_name  =  '{world}°world.tool';
 
         $this->addField('id', 'Number');
         $this->addField('name', 'String');

@@ -10,7 +10,7 @@ abstract class AccessControlMap extends BaseObjectMap
     public function initialize()
     {
         $this->object_class =  'Model\Pomm\Entity\Toogworld\AccessControl';
-        $this->object_name  =  'toogworld.access_control';
+        $this->object_name  =  '{world}°world.access_control';
 
         $this->addField('user_id', 'Number');
         $this->addField('tool_id', 'Number');
