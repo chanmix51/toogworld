@@ -1,5 +1,7 @@
 <?php
 
+define('WORLD', '{world}');
+
 require __DIR__.'/vendor/silex.phar';
 require __DIR__.'/resources/exceptions/UnauthorizedException.php';
 require __DIR__.'/resources/exceptions/ValidationException.php';
@@ -12,7 +14,7 @@ $config = array('db_dsn' => 'pgsql://world:{db-password}@{db-host}/{world}');
 $app = new Application();
 
 /* DEBUG */
-$app['debug'] = (ENV !== 'prod');
+$app['debug'] = (defined('ENV') && ENV !== 'prod');
 
 /* AUTOLOADING */
 $app['autoloader']->registerNamespace('GHub', __DIR__.'/vendor');
