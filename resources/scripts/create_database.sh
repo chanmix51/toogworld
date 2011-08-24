@@ -17,7 +17,7 @@ must_be_root;
 check_arg_count 1 $*;
 
 WORLD_NAME=$1;
-DB_USER="${WORLD_NAME}/world";
+DB_USER="${WORLD_NAME}°world";
 HOST_NAME='localhost';
 
 password=$(create_db_user) || error_and_exit 6 "Cannot create database user.";
