@@ -4,6 +4,7 @@ LXC_DIR=/var/lib/lxc
 TEMPLATE=template
 DB_FILE=ip_addr.sqlite
 NETWORK_MASK="10.0.%d.%d"
+DOMAIN=toogworld.net
 
 NGINX_CONFIG=/etc/nginx
 SITES_AVAILABLE=${NGINX_CONFIG}/sites-available
@@ -13,3 +14,5 @@ PG_CONF=/etc/postgresql/8.4/main
 PG_HBA=$PG_CONF/pg_hba.conf
 
 LIB_DIR="./lib"
+
+PACKAGE_DIR=/var/toogworld/applications

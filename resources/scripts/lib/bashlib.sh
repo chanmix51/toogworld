@@ -93,3 +93,9 @@ create_password() {
 echo $pass;
 }
 
+check_arg_non_empty() {
+    [ "$1" != "" ];
+
+    return $?
+}
+

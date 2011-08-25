@@ -284,3 +284,149 @@ parse_model_base_file() {
          || return 1;
   done
 }
+
+dump_application_requirements() {
+    local dir=${APP_DIR}/${APP_NAME};
+    local application_file="$dir/package/application.xml";
+
+    must "[ -d $dir ]" \
+         "The directory '${dir}' does not exist." \
+         || return 1
+    must "[ -f $application_file ]" \
+         "Package file '${application_file}' does not exists." \
+         || return 1;
+
+    local req=$(get_dependencies ${application_file}) || return 2
+
+    echo $req;
+} 
+
+install_application_files() {
+    must_not "[ -d "$TARGET_DIR" ]" \
+        "Application '${APP_NAME}' already exists in world '${WORLD_NAME}'." \
+        || return 1;
+    must "mkdir $TARGET_DIR" \
+        "Cannot create directory '${TARGET_DIR}'." \
+        || return 1;
+    must "cp -r ${APP_DIR}/source/* ${TARGET_DIR}/" \
+        "Error while copying files to the world '${WORLD_NAME}'." \
+        || return 2;
+}
+
+check_application_files_parameters() {
+    local parameters;
+
+    define -a parameters=$(get_application_files_parameters ${application_file} $1) || return 1;
+
+    for parameter in ${parameters[@]};
+    do
+        case ${parameter} in
+            "db_host")
+                check_arg_non_empty ${DB_HOST} || return 1
+                db_host=${DB_HOST}
+                ;;
+            "db_password")
+                check_arg_non_empty ${DB_PASSWORD} || return 1
+                db_password=${DB_PASSWORD}
+                ;;
+            "db_name")
+                check_arg_non_empty ${WORLD_NAME} || return 1
+                db_name=${WORLD_NAME};
+                ;;
+            "db_user")
+                check_arg_non_empty ${WORLD_NAME} || return 1
+                check_arg_non_empty ${APP_NAME}   || return 1
+                db_user="${WORLD_NAME}°${APP_NAME}"
+                ;;
+            "vhost-name")
+                check_arg_non_empty ${WORLD_NAME} || return 1
+                check_arg_non_empty ${DOMAIN} || return 1
+                vhost_name="${APP_NAME}.${WORLD_NAME}.${DOMAIN}"
+                ;;
+            "root_dir")
+                check_arg_non_empty ${TARGET_DIR} || return 1
+                root_dir="${TARGET_DIR}"
+                ;;
+            "tcp_port")
+                error_msg "'tcp_port' is NOT implemented yet."
+                return 1;
+                ;;
+            *)
+                error_msg "Parameter '${parameter}' is unknown."
+                return 1;
+        esac
+    done
+}
+
+create_application_vhost() {
+    local application_file="${APP_DIR}/package/application.xml";
+    local conf_file="${WORLD_DIR}/rootfs/etc/nginx/sites-available/${APP_NAME}.conf";
+    local vhost_file;
+    local parameters;
+
+    must "check_application_files_parameters nginx"                                    || return 1;
+    define -a vhost_file=$(get_application_files ${application_file} nginx)            || return 1;
+    define -a parameters=$(get_application_files_parameters ${application_file} nginx) || return 1;
+
+    must "[ ${#vhost_file[@]} -eq 1 ]" \
+         "Bad vhost file read from ${application_file}." \
+         || return 1;
+
+    must "cp ${APP_DIR}/package/$vhost_file ${conf_file}" \
+         "Could not copy application nginx config file." \
+         || return 1;
+
+    for parameter in ${parameters[@]};
+    do
+        must "sed -i \"s/{${parameter}}/$(eval echo \\\$${parameter})/g\" $conf_file" \
+             "Could not parse ${conf_file} for parameter ${parameter}." \
+             || return 2;
+    done
+}
+
+parse_application_files() {
+    local type=$1;
+    check_arg_non_empty $type || return 1;
+    local application_file="${APP_DIR}/package/application.xml";
+
+    must "check_application_files_parameters sql"                                      || return 1;
+    define -a app_files=$(get_application_files ${application_file} $type)             || return 1;
+    define -a parameters=$(get_application_files_parameters ${application_file} $type) || return 1;
+
+    for file in ${app_files[0]};
+    do
+        for parameter in ${parameters[@]};
+        do
+            must "sed -i \"s/{${parameter}}/$(eval echo \\\$${parameter})/g\" ${TARGET_DIR}/${file}" \
+                "Could not parse '${TARGET_DIR}/${file} for parameter '${parameter}'." \
+                || return 2;
+        done
+    done
+}
+
+launch_sql_startup_file() {
+    local type=$1;
+    check_arg_non_empty $type || return 1;
+    local application_file="${APP_DIR}/package/application.xml";
+
+    init_file=$(get_init_file ${application_file} ${type}) || return 1;
+
+    if [ "$init_file" == "" ];
+    then
+        return 0;
+    fi
+
+    export PGPASSFILE="/tmp/.pgpass.${RANDOM}"
+    echo "${DB_HOST}::${WORLD_NAME}:${WORLD_NAME}°${APP_NAME}:${DB_PASSWORD}" > $PGPASSFILE
+    chmod 600 $PGPASSFILE
+
+    psql ${WORLD_NAME} -U "${WORLD_NAME}°${APP_NAME}" -h ${DB_HOST} < $APP_DIR/package/${init_file}
+    local fail=$?
+
+    [ $fail -ne 0 ] && error_msg "Error while connecting to the database '${WORLD_NAME}' -U '${WORLD_NAME}°${APP_NAME}' -h '${DB_HOST}'.";
+
+    rm $PGPASSFILE || warning "Could not delete '${PGPASSFILE}'. It contains access credentials for user '${WORLD_NAME}°${APP_NAME}'.";
+
+    return $fail;
+}
+
