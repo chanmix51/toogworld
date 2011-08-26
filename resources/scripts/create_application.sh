@@ -38,6 +38,7 @@ remove_config() {
 install_application_files;
 rc=$?
 if [ $rc -gt 0 ];
+then
     if [ $rc -eq 2 ];
     then
         remove_files
@@ -48,6 +49,7 @@ fi
 create_application_vhost
 rc=$?;
 if [ $rc -gt 0 ];
+then
     if [ $rc -eq 2 ];
     then
         remove_config;
