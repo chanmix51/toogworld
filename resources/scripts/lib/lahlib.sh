@@ -304,7 +304,7 @@ install_application_files() {
     must_not "[ -d "$TARGET_DIR" ]" \
         "Application '${APP_NAME}' already exists in world '${WORLD_NAME}'." \
         || return 1;
-    must "mkdir $TARGET_DIR" \
+    must "mkdir -p $TARGET_DIR" \
         "Cannot create directory '${TARGET_DIR}'." \
         || return 1;
     must "cp -r ${APP_DIR}/source/* ${TARGET_DIR}/" \
