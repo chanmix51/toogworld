@@ -383,7 +383,7 @@ create_application_vhost() {
 
     for parameter in ${parameters[@]};
     do
-        must "sed -i \"s/{${parameter}}/$(eval echo \\\$${parameter})/g\" $conf_file" \
+        must "sed -i 's#{${parameter}}#$(eval echo \\\\\$${parameter})#g' $conf_file" \
              "Could not parse ${conf_file} for parameter ${parameter}." \
              || return 2;
     done
