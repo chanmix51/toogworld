@@ -315,7 +315,7 @@ install_application_files() {
 check_application_files_parameters() {
     local parameters;
 
-    define -a parameters=$(get_application_files_parameters ${application_file} $1) || return 1;
+    declare -a parameters=$(get_application_files_parameters ${application_file} $1) || return 1;
 
     for parameter in ${parameters[@]};
     do
