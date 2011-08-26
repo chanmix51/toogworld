@@ -15,4 +15,4 @@ PG_HBA=$PG_CONF/pg_hba.conf
 
 LIB_DIR="./lib"
 
-PACKAGE_DIR=/var/toogworld/applications
+PACKAGE_DIR=/usr/share/toogworld
