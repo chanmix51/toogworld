@@ -15,9 +15,10 @@ help() {
 must_be_root;
 
 check_arg_count 1 $*;
-APP_NAME=$1;
+check_arg_non_empty $PACKAGE_DIR || error_and_exit 6 "'PACKAGE_DIR' variable must be set in configuration.";
+APP_TYPE=$1;
+APP_DIR=${PACKAGE_DIR}/${APP_TYPE}
 
-check_arg_non_empty $APP_DIR || error_and_exit 6 "'APP_DIR' variable must be set in configuration.";
 
 requirements=$(dump_application_requirements) || error_and_exit 6 "Error while querying application '${APP_NAME}'.";
 

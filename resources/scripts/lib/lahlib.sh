@@ -286,10 +286,9 @@ parse_model_base_file() {
 }
 
 dump_application_requirements() {
-    local dir=${APP_DIR}/${APP_NAME};
-    local application_file="$dir/package/application.xml";
+    local application_file="$APP_DIR/package/application.xml";
 
-    must "[ -d $dir ]" \
+    must "[ -d $APP_DIR ]" \
          "The directory '${dir}' does not exist." \
          || return 1
     must "[ -f $application_file ]" \
