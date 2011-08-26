@@ -17,9 +17,8 @@ help() {
 must_be_root;
 
 check_arg_count 3 $*;
-check_arg_non_empty $APP_DIR || error_and_exit 6 "'APP_DIR' variable must be set in configuration.";
-check_arg_non_empty $LXC_DIR || error_and_exit 6 "'LXC_DIR' variable must be set in configuration.";
 check_arg_non_empty $PACKAGE_DIR || error_and_exit 6 "'PACKAGE_DIR' variable must be set in configuration.";
+check_arg_non_empty $LXC_DIR || error_and_exit 6 "'LXC_DIR' variable must be set in configuration.";
 
 APP_TYPE=$1
 APP_NAME=$2
