@@ -28,6 +28,8 @@ APP_DIR=${PACKAGE_DIR}/${APP_TYPE}
 WORLD_DIR="${LXC_DIR}/${WORLD_NAME}";
 TARGET_DIR="${WORLD_DIR}/rootfs/var/www/world/${APP_NAME}"
 
+. ./lib/appxmllib.sh
+
 parse_application_files sql || error_and_exit 6 "Error while configuring the SQL in application '${APP_NAME}'."
 
 launch_startup_files || error_and_exit 6 "Error while launching SQL startup files for '${APP_NAME}'.";
