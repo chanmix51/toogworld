@@ -249,7 +249,7 @@ remove_pg_hbas() {
 }
 
 postgresql_reload() {
-  must "/etc/init.d/postgresql reload 2>/dev/null" \
+  must "/etc/init.d/postgresql reload 2>/dev/null 1>&2" \
     "Could not signal postgresql for reloading configuration." \
     return 1;
 }
@@ -395,14 +395,20 @@ parse_application_files() {
     local application_file="${APP_DIR}/package/application.xml";
 
     must "check_application_files_parameters sql"                                      || return 1;
-    define -a app_files=$(get_application_files ${application_file} $type)             || return 1;
-    define -a parameters=$(get_application_files_parameters ${application_file} $type) || return 1;
+    declare -a app_files=$(get_application_files ${application_file} $type);
+    must "check_arg_non_empty ${app_files}" \
+         "Could not retreive app_files for SQL in '${application_file}'." \
+         || return 1;
+    declare -a parameters=$(get_application_files_parameters ${application_file} $type);
+    must "check_arg_non_empty ${parameters}" \
+         "Could not get app file parameters for SQL in '${application_file}'." \
+         || return 1;
 
     for file in ${app_files[0]};
     do
         for parameter in ${parameters[@]};
         do
-            must "sed -i \"s/{${parameter}}/$(eval echo \\\$${parameter})/g\" ${TARGET_DIR}/${file}" \
+            must "sed -i 's/{${parameter}}/$(eval echo \\\\\$${parameter})/g' ${TARGET_DIR}/${file}" \
                 "Could not parse '${TARGET_DIR}/${file} for parameter '${parameter}'." \
                 || return 2;
         done
