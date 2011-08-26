@@ -26,7 +26,7 @@ DB_HOST=$4
 DB_PASSWORD=$5
 APP_DIR=${PACKAGE_DIR}/${APP_TYPE}
 WORLD_DIR="${LXC_DIR}/${WORLD_NAME}";
-TARGET_DIR="${WORLD_DIR}/rootfs/var/www/${APP_NAME}"
+TARGET_DIR="${WORLD_DIR}/rootfs/var/www/applications/${APP_NAME}"
 
 . ./lib/appxmllib.sh
 

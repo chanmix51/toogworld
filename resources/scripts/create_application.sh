@@ -24,7 +24,7 @@ APP_TYPE=$1
 APP_NAME=$2
 WORLD_NAME=$3
 WORLD_DIR=${LXC_DIR}/${WORLD_NAME}
-TARGET_DIR=${WORLD_DIR}/rootfs/var/www/world/applications/${APP_NAME}
+TARGET_DIR=${WORLD_DIR}/rootfs/var/www/applications/${APP_NAME}
 APP_DIR="${PACKAGE_DIR}/${APP_TYPE}"
 
 remove_files() {
