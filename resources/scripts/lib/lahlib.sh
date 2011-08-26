@@ -150,7 +150,7 @@ destroy_db() {
 }
 
 destroy_schema() {
-  sql="DROP SCHEMA \\\"${DB_USER}\\\" CASCADE;";
+  sql="DROP SCHEMA \\\"${DB_USER}\\\" CASCADE; DROP ROLE \\\"${DB_USER}\\\";";
   query_db_server ${WORLD_NAME}  "$sql" || return 1;
 }
 
