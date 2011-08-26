@@ -28,11 +28,11 @@ TARGET_DIR=${WORLD_DIR}/rootfs/var/www/world/applications/${APP_NAME}
 APP_DIR="${PACKAGE_DIR}/${APP_TYPE}"
 
 remove_files() {
-  rm -r $TARGET_DIR && info "Removed dir '$TARGET_DIR'." || warning "Could not remove '$TARGET_DIR', please check.";
+  rm -r $TARGET_DIR && notice "Removed dir '$TARGET_DIR'." || warning "Could not remove '$TARGET_DIR', please check.";
 }
 
 remove_config() {
-  rm -r "$WORLD_DIR/rootfs/etc/nginx/sites-available/${APP_NAME}.conf" && info "Removed nginx configuration file." || warning "Could NOT remove nginx configuration file."
+  rm -r "$WORLD_DIR/rootfs/etc/nginx/sites-available/${APP_NAME}.conf" && notice "Removed nginx configuration file." || warning "Could NOT remove nginx configuration file."
 }
 
 . ./lib/appxmllib.sh

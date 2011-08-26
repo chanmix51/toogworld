@@ -337,7 +337,7 @@ check_application_files_parameters() {
                 check_arg_non_empty ${APP_NAME}   || return 1
                 db_user="${WORLD_NAME}°${APP_NAME}"
                 ;;
-            "vhost-name")
+            "vhost_name")
                 check_arg_non_empty ${WORLD_NAME} || return 1
                 check_arg_non_empty ${DOMAIN} || return 1
                 vhost_name="${APP_NAME}.${WORLD_NAME}.${DOMAIN}"
