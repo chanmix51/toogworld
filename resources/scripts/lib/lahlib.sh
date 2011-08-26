@@ -408,7 +408,8 @@ parse_application_files() {
     do
         for parameter in ${parameters[@]};
         do
-            must "sed -i 's/{${parameter}}/$(eval echo \\\\\$${parameter})/g' ${TARGET_DIR}/${file}" \
+            local value=$(eval echo \$${parameter})
+            must "sed -i 's#{${parameter}}#${value}#g' ${TARGET_DIR}/${file}" \
                 "Could not parse '${TARGET_DIR}/${file} for parameter '${parameter}'." \
                 || return 2;
         done
@@ -416,11 +417,10 @@ parse_application_files() {
 }
 
 launch_sql_startup_file() {
-    local type=$1;
-    check_arg_non_empty $type || return 1;
     local application_file="${APP_DIR}/package/application.xml";
+    local pg_user="${WORLD_NAME}°${APP_NAME}";
 
-    init_file=$(get_init_file ${application_file} ${type}) || return 1;
+    init_file=$(get_init_file ${application_file} sql) || return 1;
 
     if [ "$init_file" == "" ];
     then
@@ -428,10 +428,10 @@ launch_sql_startup_file() {
     fi
 
     export PGPASSFILE="/tmp/.pgpass.${RANDOM}"
-    echo "${DB_HOST}::${WORLD_NAME}:${WORLD_NAME}°${APP_NAME}:${DB_PASSWORD}" > $PGPASSFILE
+    echo "${DB_HOST}:*:${WORLD_NAME}:${WORLD_NAME}°${APP_NAME}:${DB_PASSWORD}" > $PGPASSFILE
     chmod 600 $PGPASSFILE
 
-    psql ${WORLD_NAME} -U "${WORLD_NAME}°${APP_NAME}" -h ${DB_HOST} < $APP_DIR/package/${init_file}
+    psql ${WORLD_NAME} -U "$pg_user" -h ${DB_HOST} < $APP_DIR/package/${init_file}
     local fail=$?
 
     [ $fail -ne 0 ] && error_msg "Error while connecting to the database '${WORLD_NAME}' -U '${WORLD_NAME}°${APP_NAME}' -h '${DB_HOST}'.";

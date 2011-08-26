@@ -32,4 +32,4 @@ TARGET_DIR="${WORLD_DIR}/rootfs/var/www/applications/${APP_NAME}"
 
 parse_application_files sql || error_and_exit 6 "Error while configuring the SQL in application '${APP_NAME}'."
 
-launch_startup_files || error_and_exit 6 "Error while launching SQL startup files for '${APP_NAME}'.";
+launch_sql_startup_file || error_and_exit 6 "Error while launching SQL startup file for '${APP_NAME}'.";
