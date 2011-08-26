@@ -19,6 +19,7 @@ check_arg_non_empty $PACKAGE_DIR || error_and_exit 6 "'PACKAGE_DIR' variable mus
 APP_TYPE=$1;
 APP_DIR=${PACKAGE_DIR}/${APP_TYPE}
 
+. lib/appxmllib.sh
 
 requirements=$(dump_application_requirements) || error_and_exit 6 "Error while querying application '${APP_NAME}'.";
 
