@@ -19,7 +19,7 @@ check_arg_count 2 $*;
 
 WORLD_NAME=$1;
 TOOL_NAME=$2;
-DB_USER="${WORLD_NAME}/${TOOL_NAME}";
+DB_USER="${WORLD_NAME}°${TOOL_NAME}";
 
 password=$(create_db_schema)  || error_and_exit 6 "Could not create database schema.";
 echo $password;
