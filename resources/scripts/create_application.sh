@@ -35,6 +35,8 @@ remove_config() {
   rm -r "$WORLD_DIR/rootfs/etc/nginx/sites-available/${APP_NAME}.conf" && info "Removed nginx configuration file." || warning "Could NOT remove nginx configuration file."
 }
 
+. ./lib/appxmllib.sh
+
 install_application_files;
 rc=$?
 if [ $rc -gt 0 ];
