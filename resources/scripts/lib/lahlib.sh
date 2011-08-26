@@ -364,8 +364,14 @@ create_application_vhost() {
     local parameters;
 
     must "check_application_files_parameters nginx"                                     || return 1;
-    declare -a vhost_file=$(get_application_files ${application_file} nginx)            || return 1;
-    declare -a parameters=$(get_application_files_parameters ${application_file} nginx) || return 1;
+    declare -a vhost_file=$(get_application_files ${application_file} nginx)
+    must "check_arg_non_empty ${vhost_file}" \
+        "vhost file empty." \
+        || return 1;
+    declare -a parameters=$(get_application_files_parameters ${application_file} nginx)
+    must "check_arg_non_empty ${parameters}" \
+         "Empty parameters." \
+         || return 1;
 
     must "[ ${#vhost_file[@]} -eq 1 ]" \
          "Bad vhost file read from ${application_file}." \
