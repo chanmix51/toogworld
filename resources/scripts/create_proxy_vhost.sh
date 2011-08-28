@@ -8,7 +8,7 @@ help() {
   echo -e "${COLOR_BOLD}$0${COLOR_RESET} name";
   echo -e;
   echo -e "Create a proxy virtualhost to redirect http queries to the world.";
-  echo -e "  ${COLOR_UNDERLINE}name${COLOR_RESET} The name of the world (will create the domain ${COLOR_UNDERLINE}name.toogworld.net${COLOR_RESET}).";
+  echo -e "  ${COLOR_UNDERLINE}name${COLOR_RESET} The name of the world (will create the domain ${COLOR_UNDERLINE}name.${DOMAIN}${COLOR_RESET}).";
   echo -e;
 }
 
@@ -17,7 +17,7 @@ must_be_root;
 check_arg_count 1 $*;
 
 WORLD_NAME=$1;
-WORLD_DOMAIN="${WORLD_NAME}.toogworld.net";
+WORLD_DOMAIN="${WORLD_NAME}.${DOMAIN}"
 
 IP_ADDR=$(create_ip_addr);
 if [ $? -ne 0 ];
