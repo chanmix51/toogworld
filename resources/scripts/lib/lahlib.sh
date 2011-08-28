@@ -344,7 +344,7 @@ check_application_files_parameters() {
                 ;;
             "root_dir")
                 check_arg_non_empty ${TARGET_DIR} || return 1
-                root_dir="${TARGET_DIR}"
+                root_dir=${TARGET_DIR#${WORLD_DIR}/rootfs}
                 ;;
             "tcp_port")
                 error_msg "'tcp_port' is NOT implemented yet."

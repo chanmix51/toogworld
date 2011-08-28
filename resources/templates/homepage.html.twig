@@ -17,7 +17,7 @@ $(document).ready(function() {
 {% endfor %}
     $('#user_mgmt').click(function() { 
         $.newWindow({id: "user_mgmt_console", title: "User management console", height: 400, width: 600, type: "iframe"}); 
-        $.updateWindowContent('user_mgmt_console', '<iframe src="http://world.toogworld.net{{ app.url_generator.generate('users') }}" width="600" height="400"  />'); 
+        $.updateWindowContent('user_mgmt_console', '<iframe src="{{ app.url_generator.generate('users') }}" width="600" height="400"  />'); 
     });
 });
         //!>
